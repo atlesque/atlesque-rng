@@ -1,5 +1,6 @@
 import {
-  ClockIcon,
+  ChevronRightIcon,
+  DoubleArrowRightIcon,
   MagicWandIcon,
   MagnifyingGlassIcon,
   PlayIcon,
@@ -15,25 +16,30 @@ import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import styles from './App.module.scss';
 
-const MIN_AUTO_GENERATE_SPEED = 100;
-const DEFAULT_AUTO_GENERATE_SPEED = 2000;
+const MIN_AUTO_GENERATE_SPEED = 1; // sec
+const MAX_AUTO_GENERATE_SPEED = 10; // sec
+const DEFAULT_AUTO_GENERATE_SPEED = 2; //sec
 const MIN_ZOOM_LEVEL = 1;
 const MAX_ZOOM_LEVEL = 14;
+const DEFAULT_ZOOM_LEVEL = 1;
+const DEFAULT_MIN_NUMBER = 1;
+const DEFAULT_MAX_NUMBER = 5;
 
 export const App = () => {
-  const [randomNumber, setRandomNumber] = useState(0);
-  const [minNumber, setMinNumber] = useState(1);
-  const [maxNumber, setMaxNumber] = useState(5);
+  const [randomNumber, setRandomNumber] = useState(DEFAULT_MIN_NUMBER);
+  const [minNumber, setMinNumber] = useState(DEFAULT_MIN_NUMBER);
+  const [maxNumber, setMaxNumber] = useState(DEFAULT_MAX_NUMBER);
   const [isAutoGenerateEnabled, setIsAutoGenerateEnabled] = useState(false);
   const [autoGenerateSpeed, setAutoGenerateSpeed] = useState(DEFAULT_AUTO_GENERATE_SPEED);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
-  const [textZoomLevel, setTextZoomLevel] = useState(1);
+  const [textZoomLevel, setTextZoomLevel] = useState(DEFAULT_ZOOM_LEVEL);
 
   const speak = (text: string) => {
     if (!isAudioEnabled) return;
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.7;
+    utterance.rate =
+      0.5 + ((MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed) / MAX_AUTO_GENERATE_SPEED) * 0.9;
     speechSynthesis.speak(utterance);
   };
 
@@ -53,8 +59,8 @@ export const App = () => {
   };
 
   const handleMinNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Don't allow min to be greater than max
-    const newMin = parseInt(e.target.value);
+    const newNumber = parseInt(e.target.value);
+    const newMin = isNaN(newNumber) ? DEFAULT_MIN_NUMBER : newNumber;
     if (newMin > maxNumber) {
       setMinNumber(maxNumber);
       return;
@@ -62,8 +68,8 @@ export const App = () => {
     setMinNumber(newMin);
   };
   const handleMaxNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Don't allow max to be less than min
-    const newMax = parseInt(e.target.value);
+    const newNumber = parseInt(e.target.value);
+    const newMax = isNaN(newNumber) ? DEFAULT_MAX_NUMBER : newNumber;
     if (newMax < minNumber) {
       setMaxNumber(minNumber);
       return;
@@ -82,11 +88,11 @@ export const App = () => {
     () => {
       generateRandomNumber();
     },
-    isAutoGenerateEnabled ? autoGenerateSpeed : null
+    // seconds to milliseconds
+    isAutoGenerateEnabled ? autoGenerateSpeed * 1000 : null
   );
 
-  const handleAutoGenerateSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSpeed = parseInt(e.target.value);
+  const handleAutoGenerateSpeedChange = (newSpeed: number) => {
     if (newSpeed < MIN_AUTO_GENERATE_SPEED) {
       setAutoGenerateSpeed(MIN_AUTO_GENERATE_SPEED);
       return;
@@ -116,7 +122,7 @@ export const App = () => {
               {randomNumber}
             </Text>
           </Flex>
-          <Flex gap="2">
+          <Flex gap="2" style={{ maxWidth: 200 }}>
             <TextField.Root>
               <TextField.Slot>
                 <TriangleLeftIcon height={16} width={16} />
@@ -128,17 +134,6 @@ export const App = () => {
                 <TriangleRightIcon height={16} width={16} />
               </TextField.Slot>
               <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
-            </TextField.Root>
-            <TextField.Root>
-              <TextField.Slot>
-                <ClockIcon height={16} width={16} />
-              </TextField.Slot>
-              <TextField.Input
-                type="number"
-                value={autoGenerateSpeed}
-                min={MIN_AUTO_GENERATE_SPEED}
-                onChange={handleAutoGenerateSpeedChange}
-              />
             </TextField.Root>
           </Flex>
           <Flex gap="2">
@@ -162,7 +157,7 @@ export const App = () => {
             </IconButton>
           </Flex>
           <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
-            <MagnifyingGlassIcon height={16} width={16} />
+            <MagnifyingGlassIcon height={12} width={12} />
             <Slider
               min={MIN_ZOOM_LEVEL}
               max={MAX_ZOOM_LEVEL}
@@ -171,6 +166,20 @@ export const App = () => {
               size="2"
               style={{ flex: 1 }}
             />
+            <MagnifyingGlassIcon height={20} width={20} />
+          </Flex>
+          <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
+            <ChevronRightIcon height={12} width={12} />
+            <Slider
+              min={MIN_AUTO_GENERATE_SPEED + 1}
+              max={MAX_AUTO_GENERATE_SPEED - MIN_AUTO_GENERATE_SPEED}
+              value={[MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed]}
+              step={1}
+              onValueChange={val => handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])}
+              size="2"
+              style={{ flex: 1 }}
+            />
+            <DoubleArrowRightIcon height={20} width={20} />
           </Flex>
         </Flex>
       </div>
