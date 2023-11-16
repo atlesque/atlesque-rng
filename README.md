@@ -18,7 +18,7 @@ Open [localhost:5174](localhost:5174) in your browser.
 
 `npm run build`
 
-And deploy output to any static file host.
+And deploy `dist` output to any static file host.
 
 ## Additional info
 
