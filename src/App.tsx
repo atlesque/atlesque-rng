@@ -1,11 +1,13 @@
 import {
   ClockIcon,
+  EyeOpenIcon,
+  MagnifyingGlassIcon,
   SpeakerLoudIcon,
   SpeakerOffIcon,
   TriangleLeftIcon,
   TriangleRightIcon,
 } from '@radix-ui/react-icons';
-import { Button, Flex, Heading, IconButton, TextField, Theme } from '@radix-ui/themes';
+import { Button, Flex, IconButton, Slider, Text, TextField, Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
@@ -13,6 +15,8 @@ import styles from './App.module.scss';
 
 const MIN_AUTO_GENERATE_SPEED = 100;
 const DEFAULT_AUTO_GENERATE_SPEED = 2000;
+const MIN_ZOOM_LEVEL = 1;
+const MAX_ZOOM_LEVEL = 14;
 
 export const App = () => {
   const [randomNumber, setRandomNumber] = useState(0);
@@ -21,6 +25,7 @@ export const App = () => {
   const [isAutoGenerateEnabled, setIsAutoGenerateEnabled] = useState(false);
   const [autoGenerateSpeed, setAutoGenerateSpeed] = useState(DEFAULT_AUTO_GENERATE_SPEED);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [textZoomLevel, setTextZoomLevel] = useState(1);
 
   const speak = (text: string) => {
     if (!isAudioEnabled) return;
@@ -102,7 +107,9 @@ export const App = () => {
           height="100%"
         >
           <Flex grow="1" align="center">
-            <Heading size="9">{randomNumber}</Heading>
+            <Text size="9" style={{ zoom: textZoomLevel }}>
+              {randomNumber}
+            </Text>
           </Flex>
           <Flex gap="2">
             <TextField.Root>
@@ -140,6 +147,17 @@ export const App = () => {
             <IconButton onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
               {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
             </IconButton>
+          </Flex>
+          <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
+            <MagnifyingGlassIcon height={16} width={16} />
+            <Slider
+              min={MIN_ZOOM_LEVEL}
+              max={MAX_ZOOM_LEVEL}
+              value={[textZoomLevel]}
+              onValueChange={val => setTextZoomLevel(val[0])}
+              size="2"
+              style={{ flex: 1 }}
+            />
           </Flex>
         </Flex>
       </div>
