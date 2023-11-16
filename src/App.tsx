@@ -1,9 +1,11 @@
 import {
   ClockIcon,
-  EyeOpenIcon,
+  MagicWandIcon,
   MagnifyingGlassIcon,
+  PlayIcon,
   SpeakerLoudIcon,
   SpeakerOffIcon,
+  StopIcon,
   TriangleLeftIcon,
   TriangleRightIcon,
 } from '@radix-ui/react-icons';
@@ -70,6 +72,9 @@ export const App = () => {
   };
 
   const handleAutoGenerateClick = () => {
+    if (!isAutoGenerateEnabled) {
+      generateRandomNumber();
+    }
     setIsAutoGenerateEnabled(!isAutoGenerateEnabled);
   };
 
@@ -137,12 +142,20 @@ export const App = () => {
             </TextField.Root>
           </Flex>
           <Flex gap="2">
-            <Button onClick={generateRandomNumber}>Generate</Button>
+            <Button onClick={generateRandomNumber}>
+              <MagicWandIcon />
+            </Button>
             <Button
               color={isAutoGenerateEnabled ? 'red' : undefined}
               onClick={handleAutoGenerateClick}
             >
-              {isAutoGenerateEnabled ? 'Stop generating' : 'Auto generate'}
+              {isAutoGenerateEnabled ? (
+                <StopIcon />
+              ) : (
+                <>
+                  <PlayIcon />
+                </>
+              )}
             </Button>
             <IconButton onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
               {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
