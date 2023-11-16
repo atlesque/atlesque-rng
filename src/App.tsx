@@ -81,6 +81,7 @@ export const App = () => {
           direction="column"
           gap="2"
           p="4"
+          pb="9"
           align="center"
           justify="center"
           width="100%"
