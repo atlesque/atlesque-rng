@@ -1,5 +1,11 @@
-import { ClockIcon, TriangleLeftIcon, TriangleRightIcon } from '@radix-ui/react-icons';
-import { Button, Flex, Heading, TextField, Theme } from '@radix-ui/themes';
+import {
+  ClockIcon,
+  SpeakerLoudIcon,
+  SpeakerOffIcon,
+  TriangleLeftIcon,
+  TriangleRightIcon,
+} from '@radix-ui/react-icons';
+import { Button, Flex, Heading, IconButton, TextField, Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
@@ -14,8 +20,10 @@ export const App = () => {
   const [maxNumber, setMaxNumber] = useState(5);
   const [isAutoGenerateEnabled, setIsAutoGenerateEnabled] = useState(false);
   const [autoGenerateSpeed, setAutoGenerateSpeed] = useState(DEFAULT_AUTO_GENERATE_SPEED);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
 
   const speak = (text: string) => {
+    if (!isAudioEnabled) return;
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.7;
@@ -76,6 +84,10 @@ export const App = () => {
     setAutoGenerateSpeed(newSpeed);
   };
 
+  const handleToggleAudioClick = () => {
+    setIsAudioEnabled(!isAudioEnabled);
+  };
+
   return (
     <Theme>
       <div className={styles.root}>
@@ -95,19 +107,19 @@ export const App = () => {
           <Flex gap="2">
             <TextField.Root>
               <TextField.Slot>
-                <TriangleLeftIcon height="16" width="16" />
+                <TriangleLeftIcon height={16} width={16} />
               </TextField.Slot>
               <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
             </TextField.Root>
             <TextField.Root>
               <TextField.Slot>
-                <TriangleRightIcon height="16" width="16" />
+                <TriangleRightIcon height={16} width={16} />
               </TextField.Slot>
               <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
             </TextField.Root>
             <TextField.Root>
               <TextField.Slot>
-                <ClockIcon height="16" width="16" />
+                <ClockIcon height={16} width={16} />
               </TextField.Slot>
               <TextField.Input
                 type="number"
@@ -125,6 +137,9 @@ export const App = () => {
             >
               {isAutoGenerateEnabled ? 'Stop generating' : 'Auto generate'}
             </Button>
+            <IconButton onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
+              {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
+            </IconButton>
           </Flex>
         </Flex>
       </div>
