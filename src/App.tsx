@@ -2,6 +2,7 @@ import { ClockIcon, TriangleLeftIcon, TriangleRightIcon } from '@radix-ui/react-
 import { Button, Flex, Heading, TextField, Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
+import { useInterval } from 'usehooks-ts';
 import styles from './App.module.scss';
 
 const MIN_AUTO_GENERATE_SPEED = 100;
@@ -12,12 +13,16 @@ export const App = () => {
   const [minNumber, setMinNumber] = useState(1);
   const [maxNumber, setMaxNumber] = useState(5);
   const [isAutoGenerateEnabled, setIsAutoGenerateEnabled] = useState(false);
-  const [autoGenerateInterval, setAutoGenerateInterval] = useState<ReturnType<
-    typeof setTimeout
-    > | null>(null);
   const [autoGenerateSpeed, setAutoGenerateSpeed] = useState(DEFAULT_AUTO_GENERATE_SPEED);
 
-  const handleGenerateClick = () => {
+  const speak = (text: string) => {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.7;
+    speechSynthesis.speak(utterance);
+  };
+
+  const generateRandomNumber = () => {
     // If min and max are identical, just return the number
     if (minNumber === maxNumber) {
       setRandomNumber(minNumber);
@@ -29,6 +34,7 @@ export const App = () => {
       newNumber = Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
     }
     setRandomNumber(newNumber);
+    speak(newNumber.toString());
   };
 
   const handleMinNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,18 +58,14 @@ export const App = () => {
 
   const handleAutoGenerateClick = () => {
     setIsAutoGenerateEnabled(!isAutoGenerateEnabled);
-    if (isAutoGenerateEnabled) {
-      // Stop auto-generating
-      if (autoGenerateInterval) {
-        clearInterval(autoGenerateInterval);
-        setAutoGenerateInterval(null);
-      }
-    } else {
-      // Start auto-generating
-      const interval = setInterval(handleGenerateClick, autoGenerateSpeed);
-      setAutoGenerateInterval(interval);
-    }
   };
+
+  useInterval(
+    () => {
+      generateRandomNumber();
+    },
+    isAutoGenerateEnabled ? autoGenerateSpeed : null
+  );
 
   const handleAutoGenerateSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSpeed = parseInt(e.target.value);
@@ -72,7 +74,7 @@ export const App = () => {
       return;
     }
     setAutoGenerateSpeed(newSpeed);
-  }
+  };
 
   return (
     <Theme>
@@ -116,7 +118,7 @@ export const App = () => {
             </TextField.Root>
           </Flex>
           <Flex gap="2">
-            <Button onClick={handleGenerateClick}>Generate</Button>
+            <Button onClick={generateRandomNumber}>Generate</Button>
             <Button
               color={isAutoGenerateEnabled ? 'red' : undefined}
               onClick={handleAutoGenerateClick}
