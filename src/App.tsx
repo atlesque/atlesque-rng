@@ -15,13 +15,14 @@ import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import styles from './App.module.scss';
+import { DarkModeToggle } from './DarkModeToggle';
 
 const MIN_AUTO_GENERATE_SPEED = 1; // sec
 const MAX_AUTO_GENERATE_SPEED = 10; // sec
 const DEFAULT_AUTO_GENERATE_SPEED = 2; //sec
 const MIN_ZOOM_LEVEL = 1;
 const MAX_ZOOM_LEVEL = 14;
-const DEFAULT_ZOOM_LEVEL = 1;
+const DEFAULT_ZOOM_LEVEL = 3;
 const DEFAULT_MIN_NUMBER = 1;
 const DEFAULT_MAX_NUMBER = 5;
 
@@ -155,6 +156,7 @@ export const App = () => {
             <IconButton onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
               {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
             </IconButton>
+            <DarkModeToggle />
           </Flex>
           <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
             <MagnifyingGlassIcon height={12} width={12} />
