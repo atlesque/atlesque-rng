@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
-import { Button } from '@radix-ui/themes';
+import { IconButton } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 
 export const DarkModeToggle = () => {
@@ -17,8 +17,13 @@ export const DarkModeToggle = () => {
   }, []);
 
   return (
-    <Button variant="outline" color="gray" onClick={handleDarkModeToggle}>
+    <IconButton
+      variant="outline"
+      color="gray"
+      onClick={handleDarkModeToggle}
+      style={{ width: '100%' }}
+    >
       {isDarkMode ? <SunIcon /> : <MoonIcon />}
-    </Button>
+    </IconButton>
   );
 };

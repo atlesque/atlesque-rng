@@ -1,7 +1,6 @@
 import {
   ChevronRightIcon,
   DoubleArrowRightIcon,
-  GearIcon,
   MagicWandIcon,
   MagnifyingGlassIcon,
   PlayIcon,
@@ -11,12 +10,14 @@ import {
   TriangleLeftIcon,
   TriangleRightIcon,
 } from '@radix-ui/react-icons';
-import { Button, Flex, Grid, Slider, Text, TextField, Theme } from '@radix-ui/themes';
+import { Button, Flex, Grid, IconButton, Slider, Text, TextField } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import styles from './App.module.scss';
 import { DarkModeToggle } from './DarkModeToggle';
+import { SettingsContext } from './SettingsContext';
+import { SettingsDialog } from './SettingsDialog';
 
 const MIN_AUTO_GENERATE_SPEED = 1; // sec
 const MAX_AUTO_GENERATE_SPEED = 10; // sec
@@ -35,11 +36,14 @@ export const App = () => {
   const [autoGenerateSpeed, setAutoGenerateSpeed] = useState(DEFAULT_AUTO_GENERATE_SPEED);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [textZoomLevel, setTextZoomLevel] = useState(DEFAULT_ZOOM_LEVEL);
+  const { audioLanguage, audioVoice } = useContext(SettingsContext);
 
   const speak = (text: string) => {
     if (!isAudioEnabled) return;
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = audioLanguage.code;
+    utterance.voice = audioVoice;
     utterance.rate =
       0.5 + ((MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed) / MAX_AUTO_GENERATE_SPEED) * 0.9;
     speechSynthesis.speak(utterance);
@@ -107,107 +111,100 @@ export const App = () => {
   };
 
   return (
-    <Theme>
-      <div className={styles.root}>
-        <Flex
-          direction="column"
-          gap="2"
-          p="4"
-          pb="9"
-          align="center"
-          justify="center"
-          width="100%"
-          height="100%"
-        >
-          <Flex grow="1" align="center">
-            <Text size="9" style={{ zoom: textZoomLevel }}>
-              {randomNumber}
-            </Text>
-          </Flex>
+    <div className={styles.root}>
+      <Flex
+        direction="column"
+        gap="2"
+        p="4"
+        pb="9"
+        align="center"
+        justify="center"
+        width="100%"
+        height="100%"
+      >
+        <Flex grow="1" align="center">
+          <Text size="9" style={{ zoom: textZoomLevel }}>
+            {randomNumber}
+          </Text>
+        </Flex>
+        <Grid columns="6" gap="2" align="center" style={{ maxWidth: 250, justifyItems: 'center' }}>
+          <Button
+            onClick={generateRandomNumber}
+            style={{ justifySelf: 'normal', gridColumn: '2 / 6' }}
+          >
+            <MagicWandIcon />
+          </Button>
+          <TriangleRightIcon
+            height={16}
+            width={16}
+            style={{ gridColumn: '1 / 2', flexShrink: 0 }}
+          />
+          <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+            <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
+          </TextField.Root>
+          <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+            <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
+          </TextField.Root>
+          <TriangleLeftIcon height={16} width={16} style={{ flexShrink: 0 }} />
+          <IconButton
+            color={isAutoGenerateEnabled ? 'red' : undefined}
+            onClick={handleAutoGenerateClick}
+            style={{ gridColumn: '2 / 3', width: '100%' }}
+          >
+            {isAutoGenerateEnabled ? (
+              <StopIcon />
+            ) : (
+              <>
+                <PlayIcon />
+              </>
+            )}
+          </IconButton>
+          <IconButton
+            onClick={handleToggleAudioClick}
+            color={isAudioEnabled ? 'red' : undefined}
+            style={{ width: '100%' }}
+          >
+            {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
+          </IconButton>
+          <DarkModeToggle />
+          <SettingsDialog />
           <Grid
             columns="6"
-            gap="2"
             align="center"
-            style={{ maxWidth: 250, justifyItems: 'center' }}
+            gap="2"
+            style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
           >
-            <Button
-              onClick={generateRandomNumber}
-              style={{ justifySelf: 'normal', gridColumn: '2 / 6' }}
-            >
-              <MagicWandIcon />
-            </Button>
-            <TriangleRightIcon
-              height={16}
-              width={16}
-              style={{ gridColumn: '1 / 2', flexShrink: 0 }}
+            <MagnifyingGlassIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
+            <Slider
+              min={MIN_ZOOM_LEVEL}
+              max={MAX_ZOOM_LEVEL}
+              value={[textZoomLevel]}
+              onValueChange={val => setTextZoomLevel(val[0])}
+              size="2"
+              style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
             />
-            <TextField.Root style={{ gridColumnStart: 'span 2' }}>
-              <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
-            </TextField.Root>
-            <TextField.Root style={{ gridColumnStart: 'span 2' }}>
-              <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
-            </TextField.Root>
-            <TriangleLeftIcon height={16} width={16} style={{ flexShrink: 0 }} />
-            <Button
-              color={isAutoGenerateEnabled ? 'red' : undefined}
-              onClick={handleAutoGenerateClick}
-              style={{ gridColumn: '2 / 3' }}
-            >
-              {isAutoGenerateEnabled ? (
-                <StopIcon />
-              ) : (
-                <>
-                  <PlayIcon />
-                </>
-              )}
-            </Button>
-            <Button onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
-              {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
-            </Button>
-            <DarkModeToggle />
-            {/* <Button onClick={generateRandomNumber} style={{ gridColumnStart: 'span 1' }}>
-              <GearIcon />
-            </Button> */}
-            <Grid
-              columns="6"
-              align="center"
-              gap="2"
-              style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
-            >
-              <MagnifyingGlassIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
-              <Slider
-                min={MIN_ZOOM_LEVEL}
-                max={MAX_ZOOM_LEVEL}
-                value={[textZoomLevel]}
-                onValueChange={val => setTextZoomLevel(val[0])}
-                size="2"
-                style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
-              />
-              <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
-            </Grid>
-            <Grid
-              columns="6"
-              align="center"
-              gap="2"
-              style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
-            >
-              <ChevronRightIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
-              <Slider
-                min={MIN_AUTO_GENERATE_SPEED + 1}
-                max={MAX_AUTO_GENERATE_SPEED - MIN_AUTO_GENERATE_SPEED}
-                value={[MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed]}
-                step={1}
-                onValueChange={val =>
-                  handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])
-                }
-                size="2"
-                style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
-              />
-              <DoubleArrowRightIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
-            </Grid>
+            <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
           </Grid>
-        </Flex>
-      </div>
-    </Theme>
+          <Grid
+            columns="6"
+            align="center"
+            gap="2"
+            style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
+          >
+            <ChevronRightIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
+            <Slider
+              min={MIN_AUTO_GENERATE_SPEED + 1}
+              max={MAX_AUTO_GENERATE_SPEED - MIN_AUTO_GENERATE_SPEED}
+              value={[MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed]}
+              step={1}
+              onValueChange={val => handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])}
+              size="2"
+              style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
+            />
+            <DoubleArrowRightIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
+          </Grid>
+        </Grid>
+      </Flex>
+    </div>
   );
 };
