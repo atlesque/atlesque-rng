@@ -189,7 +189,7 @@ export const App = () => {
             />
             <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
           </Grid>
-          <span>*</span>
+          <span>*2</span>
 
           <Grid
             columns="6"
