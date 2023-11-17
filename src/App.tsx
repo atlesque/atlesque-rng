@@ -131,6 +131,7 @@ export const App = () => {
           <Button
             onClick={generateRandomNumber}
             style={{ justifySelf: 'normal', gridColumn: '2 / 6' }}
+            title="Generate"
           >
             <MagicWandIcon />
           </Button>
@@ -139,10 +140,10 @@ export const App = () => {
             width={16}
             style={{ gridColumn: '1 / 2', flexShrink: 0 }}
           />
-          <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+          <TextField.Root style={{ gridColumnStart: 'span 2' }} title="Minimum">
             <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
           </TextField.Root>
-          <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+          <TextField.Root style={{ gridColumnStart: 'span 2' }} title="Maximum">
             <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
           </TextField.Root>
           <TriangleLeftIcon height={16} width={16} style={{ flexShrink: 0 }} />
@@ -150,6 +151,7 @@ export const App = () => {
             color={isAutoGenerateEnabled ? 'red' : undefined}
             onClick={handleAutoGenerateClick}
             style={{ gridColumn: '2 / 3', width: '100%' }}
+            title={isAutoGenerateEnabled ? 'Stop auto-generate' : 'Start auto-generate'}
           >
             {isAutoGenerateEnabled ? (
               <StopIcon />
@@ -163,11 +165,12 @@ export const App = () => {
             onClick={handleToggleAudioClick}
             color={isAudioEnabled ? 'red' : undefined}
             style={{ width: '100%' }}
+            title={isAudioEnabled ? 'Disable audio' : 'Enable audio'}
           >
             {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
           </IconButton>
-          <DarkModeToggle />
           <SettingsDialog />
+          <DarkModeToggle />
           <Grid
             columns="6"
             align="center"
@@ -182,6 +185,7 @@ export const App = () => {
               onValueChange={val => setTextZoomLevel(val[0])}
               size="2"
               style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
+              title="Text size"
             />
             <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
           </Grid>
@@ -200,6 +204,7 @@ export const App = () => {
               onValueChange={val => handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])}
               size="2"
               style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
+              title="Speed"
             />
             <DoubleArrowRightIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
           </Grid>

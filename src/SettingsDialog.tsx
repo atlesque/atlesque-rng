@@ -35,7 +35,7 @@ export const SettingsDialog = () => {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <IconButton style={{ width: '100%' }}>
+        <IconButton style={{ width: '100%' }} title="Settings">
           <GearIcon />
         </IconButton>
       </Dialog.Trigger>

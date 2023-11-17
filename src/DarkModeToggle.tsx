@@ -22,6 +22,7 @@ export const DarkModeToggle = () => {
       color="gray"
       onClick={handleDarkModeToggle}
       style={{ width: '100%' }}
+      title={isDarkMode ? 'Light mode' : 'Dark mode'}
     >
       {isDarkMode ? <SunIcon /> : <MoonIcon />}
     </IconButton>
