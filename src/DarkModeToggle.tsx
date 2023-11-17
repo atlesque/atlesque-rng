@@ -17,10 +17,8 @@ export const DarkModeToggle = () => {
   }, []);
 
   return (
-    <div className={isDarkMode ? 'dark-mode' : ''}>
-      <Button variant="outline" color="gray" onClick={handleDarkModeToggle}>
-        {isDarkMode ? <SunIcon /> : <MoonIcon />}
-      </Button>
-    </div>
+    <Button variant="outline" color="gray" onClick={handleDarkModeToggle}>
+      {isDarkMode ? <SunIcon /> : <MoonIcon />}
+    </Button>
   );
 };

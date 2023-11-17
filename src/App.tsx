@@ -1,6 +1,7 @@
 import {
   ChevronRightIcon,
   DoubleArrowRightIcon,
+  GearIcon,
   MagicWandIcon,
   MagnifyingGlassIcon,
   PlayIcon,
@@ -10,7 +11,7 @@ import {
   TriangleLeftIcon,
   TriangleRightIcon,
 } from '@radix-ui/react-icons';
-import { Button, Flex, IconButton, Slider, Text, TextField, Theme } from '@radix-ui/themes';
+import { Button, Flex, Grid, Slider, Text, TextField, Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
@@ -123,27 +124,34 @@ export const App = () => {
               {randomNumber}
             </Text>
           </Flex>
-          <Flex gap="2" style={{ maxWidth: 200 }}>
-            <TextField.Root>
-              <TextField.Slot>
-                <TriangleLeftIcon height={16} width={16} />
-              </TextField.Slot>
-              <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
-            </TextField.Root>
-            <TextField.Root>
-              <TextField.Slot>
-                <TriangleRightIcon height={16} width={16} />
-              </TextField.Slot>
-              <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
-            </TextField.Root>
-          </Flex>
-          <Flex gap="2">
-            <Button onClick={generateRandomNumber}>
+          <Grid
+            columns="6"
+            gap="2"
+            align="center"
+            style={{ maxWidth: 250, justifyItems: 'center' }}
+          >
+            <Button
+              onClick={generateRandomNumber}
+              style={{ justifySelf: 'normal', gridColumn: '2 / 6' }}
+            >
               <MagicWandIcon />
             </Button>
+            <TriangleRightIcon
+              height={16}
+              width={16}
+              style={{ gridColumn: '1 / 2', flexShrink: 0 }}
+            />
+            <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+              <TextField.Input type="number" value={minNumber} onChange={handleMinNumberChange} />
+            </TextField.Root>
+            <TextField.Root style={{ gridColumnStart: 'span 2' }}>
+              <TextField.Input type="number" value={maxNumber} onChange={handleMaxNumberChange} />
+            </TextField.Root>
+            <TriangleLeftIcon height={16} width={16} style={{ flexShrink: 0 }} />
             <Button
               color={isAutoGenerateEnabled ? 'red' : undefined}
               onClick={handleAutoGenerateClick}
+              style={{ gridColumn: '2 / 3' }}
             >
               {isAutoGenerateEnabled ? (
                 <StopIcon />
@@ -153,36 +161,51 @@ export const App = () => {
                 </>
               )}
             </Button>
-            <IconButton onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
+            <Button onClick={handleToggleAudioClick} color={isAudioEnabled ? 'red' : undefined}>
               {isAudioEnabled ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
-            </IconButton>
+            </Button>
             <DarkModeToggle />
-          </Flex>
-          <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
-            <MagnifyingGlassIcon height={12} width={12} />
-            <Slider
-              min={MIN_ZOOM_LEVEL}
-              max={MAX_ZOOM_LEVEL}
-              value={[textZoomLevel]}
-              onValueChange={val => setTextZoomLevel(val[0])}
-              size="2"
-              style={{ flex: 1 }}
-            />
-            <MagnifyingGlassIcon height={20} width={20} />
-          </Flex>
-          <Flex direction="row" align="center" gap="2" style={{ width: '100%', maxWidth: 250 }}>
-            <ChevronRightIcon height={12} width={12} />
-            <Slider
-              min={MIN_AUTO_GENERATE_SPEED + 1}
-              max={MAX_AUTO_GENERATE_SPEED - MIN_AUTO_GENERATE_SPEED}
-              value={[MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed]}
-              step={1}
-              onValueChange={val => handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])}
-              size="2"
-              style={{ flex: 1 }}
-            />
-            <DoubleArrowRightIcon height={20} width={20} />
-          </Flex>
+            {/* <Button onClick={generateRandomNumber} style={{ gridColumnStart: 'span 1' }}>
+              <GearIcon />
+            </Button> */}
+            <Grid
+              columns="6"
+              align="center"
+              gap="2"
+              style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
+            >
+              <MagnifyingGlassIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
+              <Slider
+                min={MIN_ZOOM_LEVEL}
+                max={MAX_ZOOM_LEVEL}
+                value={[textZoomLevel]}
+                onValueChange={val => setTextZoomLevel(val[0])}
+                size="2"
+                style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
+              />
+              <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
+            </Grid>
+            <Grid
+              columns="6"
+              align="center"
+              gap="2"
+              style={{ gridColumnStart: 'span 6', width: '100%', justifyItems: 'center' }}
+            >
+              <ChevronRightIcon height={12} width={12} style={{ gridColumnStart: 'span 1' }} />
+              <Slider
+                min={MIN_AUTO_GENERATE_SPEED + 1}
+                max={MAX_AUTO_GENERATE_SPEED - MIN_AUTO_GENERATE_SPEED}
+                value={[MAX_AUTO_GENERATE_SPEED - autoGenerateSpeed]}
+                step={1}
+                onValueChange={val =>
+                  handleAutoGenerateSpeedChange(MAX_AUTO_GENERATE_SPEED - val[0])
+                }
+                size="2"
+                style={{ flex: 1, gridColumn: '2 / 6', justifySelf: 'normal' }}
+              />
+              <DoubleArrowRightIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
+            </Grid>
+          </Grid>
         </Flex>
       </div>
     </Theme>
