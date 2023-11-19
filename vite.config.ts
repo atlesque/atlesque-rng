@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       devOptions: {
-        enabled: true,
+        enabled: process.env.NODE_ENV === 'development',
       },
       // Cache all assets by default
       workbox: {
