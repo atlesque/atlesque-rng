@@ -10,7 +10,7 @@ import {
   TriangleLeftIcon,
   TriangleRightIcon,
 } from '@radix-ui/react-icons';
-import { Button, Flex, Grid, IconButton, Slider, Text, TextField } from '@radix-ui/themes';
+import { Box, Button, Flex, Grid, IconButton, Slider, Text, TextField } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import { useContext, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
@@ -18,10 +18,11 @@ import styles from './App.module.scss';
 import { DarkModeToggle } from './DarkModeToggle';
 import { SettingsContext } from './SettingsContext';
 import { SettingsDialog } from './SettingsDialog';
+import { ServiceWorkerStatus } from './ServiceWorkerStatus';
 
 const MIN_AUTO_GENERATE_SPEED = 1; // sec
 const MAX_AUTO_GENERATE_SPEED = 10; // sec
-const DEFAULT_AUTO_GENERATE_SPEED = 2; //sec
+const DEFAULT_AUTO_GENERATE_SPEED = 3; //sec
 const MIN_ZOOM_LEVEL = 1;
 const MAX_ZOOM_LEVEL = 14;
 const DEFAULT_ZOOM_LEVEL = 3;
@@ -112,6 +113,9 @@ export const App = () => {
 
   return (
     <div className={styles.root}>
+      <Box position="fixed" top="0" left="0" right="0" p="2">
+        <ServiceWorkerStatus />
+      </Box>
       <Flex
         direction="column"
         gap="2"
@@ -189,8 +193,6 @@ export const App = () => {
             />
             <MagnifyingGlassIcon height={20} width={20} style={{ gridColumnStart: 'span 1' }} />
           </Grid>
-          <span>*2</span>
-
           <Grid
             columns="6"
             align="center"

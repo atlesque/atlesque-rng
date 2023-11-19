@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      devOptions: {
+        enabled: true,
+      },
       // Cache all assets by default
       workbox: {
         globPatterns: ['**/*'],

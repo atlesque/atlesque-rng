@@ -21,7 +21,7 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-export const SettingsProvider = ({ children }: SettingsProviderProps) => {
+export const SettingsContextProvider = ({ children }: SettingsProviderProps) => {
   const audioVoiceOptions = window.speechSynthesis.getVoices();
   const [audioVoice, setAudioVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [audioLanguage, setAudioLanguage] = useState<AudioLanguage>(DEFAULT_AUDIO_LANGUAGE);
