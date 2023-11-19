@@ -22,6 +22,7 @@ export const ServiceWorkerStatus = () => {
         <Badge color={hasRegistrationError ? 'red' : 'green'}>
           {hasRegistrationError ? 'Error' : 'No errors'}
         </Badge>
+        <Text size="1">v0.0.0</Text>
       </Flex>
     </Flex>
   );

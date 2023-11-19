@@ -7,12 +7,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      injectRegister: 'auto',
       devOptions: {
         enabled: process.env.NODE_ENV === 'development',
       },
-      // Cache all assets by default
       workbox: {
-        globPatterns: ['**/*'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
       includeAssets: ['**/*'],
       manifest: {
