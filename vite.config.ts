@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       injectRegister: 'auto',
+      registerType: 'autoUpdate',
       devOptions: {
         enabled: process.env.NODE_ENV === 'development',
       },
