@@ -30,18 +30,22 @@ export const ServiceWorkerContextProvider = ({ children }: ServiceWorkerProvider
   const updateSW = registerSW({
     onOfflineReady() {
       setIsOfflineReady(true);
+      console.log('App is offline-ready');
     },
     onNeedRefresh() {
       /* if (confirm('Update available. Reload?')) {
         updateSW(true);
       } */
       setIsReadyToRefresh(true);
+      console.log('App has update available');
     },
     onRegisteredSW() {
       setIsWorkerRegistered(true);
+      console.log('App is registered');
     },
     onRegisterError() {
       setHasRegistrationError(true);
+      console.log('App registration failed');
     },
   });
 
